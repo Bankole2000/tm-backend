@@ -74,6 +74,9 @@ export default class SongRequestService {
       const songRequests = await this.prisma.songRequest.findMany({
         take: limit,
         skip: (page - 1) * limit,
+        orderBy: {
+          requestedAt: 'desc'
+        }
       })
       const total = await this.prisma.songRequest.count();
       const pages = Math.ceil(total / limit) || 1;
@@ -103,6 +106,9 @@ export default class SongRequestService {
         skip: (page - 1) * limit,
         where: {
           hasBeenPlayed
+        },
+        orderBy: {
+          requestedAt: 'desc'
         }
       })
       const total = await this.prisma.songRequest.count({
@@ -154,6 +160,9 @@ export default class SongRequestService {
               }
             }
           ]
+        },
+        orderBy: {
+          requestedAt: 'desc'
         }
       });
       const total = await this.prisma.songRequest.count({
@@ -227,6 +236,9 @@ export default class SongRequestService {
           AND: {
             hasBeenPlayed
           }
+        },
+        orderBy: {
+          requestedAt: 'desc'
         }
       });
       const total = await this.prisma.songRequest.count({
