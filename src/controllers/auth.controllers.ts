@@ -3,8 +3,17 @@ import { ServiceResponse } from '../@types/ServiseReponse.type';
 import { getIO } from '../lib/socketIO';
 
 
-export const adminLoginHandler = async (_req: Request, res: Response) => {
-  const sr = new ServiceResponse('Not yet implemented', null, true, 200, null, null, null);
+export const adminLoginHandler = async (req: Request, res: Response) => {
+  if(!req.body.email || !req.body.password){
+    const sr = new ServiceResponse('Invalid Login Details', null, false, 403, 'Invalid Login Details', 'Invalid Login Details', 'Check email and password');
+    return res.status(sr.statusCode).send(sr);
+  }
+  const { email, password } = req.body;
+  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD){
+    const sr = new ServiceResponse('Login Successful', null, true, 200, null, null, null);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const sr = new ServiceResponse('Invalid Login Details', null, false, 403, 'Invalid Login Details', 'Invalid Login Details', 'Check email and password');
   return res.status(sr.statusCode).send(sr);
 };
 
