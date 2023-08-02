@@ -55,6 +55,23 @@ export default class SongRequestService {
     }
   }
 
+  async updateSongRequest(requestId: string, data: Prisma.SongRequestUpdateInput){
+    try {
+      const updatedRequest = await this.prisma.songRequest.update({
+        where: {
+          id: requestId,
+        },
+        data: {
+          ...data
+        }
+      })
+      return new ServiceResponse('Song Request updated', updatedRequest, true, 201, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating song request', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async deleteSongRequest(requestId: string) {
     try {
       const deletedRequest = await this.prisma.songRequest.delete({

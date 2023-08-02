@@ -39,6 +39,25 @@ export const togglePlayedStatusHandler = async (req: Request, res: Response) => 
   return res.status(updatedRequest.statusCode).send(updatedRequest);
 }
 
+export const updateSongRequestHandler = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const foundRequest = await songService.findSongRequestById(id);
+  if(!foundRequest.success){
+    return res.status(foundRequest.statusCode).send(foundRequest);
+  }
+  const requestData: { [key: string]: string } = {};
+  songRequestFields.forEach(field => {
+    if(req.body[field]){
+      requestData[field] = req.body[field]
+    }
+  })
+  const updatedRequest = await songService.updateSongRequest(id, requestData as unknown as Prisma.SongRequestUpdateInput)
+  if(updatedRequest.success){
+    getIO().emit('SONG_REQUEST_UPDATED', updatedRequest.data);
+  }
+  return res.status(updatedRequest.statusCode).send(updatedRequest);
+}
+
 export const deleteSongRequestHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
   const foundRequest = await songService.findSongRequestById(id);
