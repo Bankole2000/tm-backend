@@ -192,6 +192,41 @@ export default class PerformanceService {
     }
   }
 
+  async getPerformanceById(id: string){
+    try {
+      const performance = this.prisma.performance.findUnique({
+        where: {
+          id
+        }
+      })
+      if(!performance){
+        return new ServiceResponse('Not found', performance, false, 404, 'Not found', 'notFound', 'Check logs and database', null)
+      }
+      return new ServiceResponse(
+        'Performance found',
+        performance,
+        true,
+        200,
+        null,
+        null,
+        null,
+        null
+      )
+    } catch (error: any) {
+      console.log({error})
+      return new ServiceResponse(
+        'Error getting performance record',
+        null,
+        false,
+        500,
+        error.message,
+        error,
+        'Check logs and database',
+        null
+      )
+    }
+  }
+
   async updatePerformance(id: string, performanceData: Prisma.PerformanceUpdateInput) {
     try {
       const updatedPerformance = await this.prisma.performance.update({
