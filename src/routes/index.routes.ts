@@ -19,5 +19,6 @@ apiRouter.post('/performances/add', addPerformanceHandler) // create performance
 apiRouter.put('/performances/:id', updatePerformanceHandler) // update performance record
 apiRouter.delete('/performances/:id', deletePerformanceHandler) // delete performance record
 apiRouter.post('/performances/batch', addBatchPerformanceHandler)
+// apiRouter.get('/performances/genres')
 
 export default apiRouter

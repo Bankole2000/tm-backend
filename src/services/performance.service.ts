@@ -63,7 +63,7 @@ export default class PerformanceService {
   async searchPerformances(searchTerm: string, page = 1, limit = 25, filter = {}){
     try {
       let data, total;
-      if(Object.keys(filter).length){
+      if(Object.keys(filter).length && searchTerm){
         data = await this.prisma.performance.findMany({
           take: limit,
           skip: (page - 1) * limit,
@@ -118,6 +118,57 @@ export default class PerformanceService {
             AND: {
               ...filter
             }
+          }
+        })
+      } else if (!Object.keys(filter).length && searchTerm) {
+        data = await this.prisma.performance.findMany({
+          take: limit,
+          skip: (page - 1) * limit,
+          where: {
+            OR: [
+              {
+                songName: {
+                  contains: searchTerm,
+                  mode: 'insensitive'
+                }
+              },
+              {
+                artistName: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                }
+              },
+              {
+                albumName: {
+                  contains: searchTerm,
+                  mode: 'insensitive'
+                }
+              }
+            ],
+          }
+        })
+        total = await this.prisma.performance.count({
+          where: {
+            OR: [
+              {
+                songName: {
+                  contains: searchTerm,
+                  mode: 'insensitive'
+                }
+              },
+              {
+                artistName: {
+                  contains: searchTerm,
+                  mode: 'insensitive',
+                }
+              },
+              {
+                albumName: {
+                  contains: searchTerm,
+                  mode: 'insensitive'
+                }
+              }
+            ],
           }
         })
       } else {
@@ -125,50 +176,12 @@ export default class PerformanceService {
           take: limit,
           skip: (page - 1) * limit,
           where: {
-            OR: [
-              {
-                songName: {
-                  contains: searchTerm,
-                  mode: 'insensitive'
-                }
-              },
-              {
-                artistName: {
-                  contains: searchTerm,
-                  mode: 'insensitive',
-                }
-              },
-              {
-                albumName: {
-                  contains: searchTerm,
-                  mode: 'insensitive'
-                }
-              }
-            ],
+            ...filter
           }
         })
         total = await this.prisma.performance.count({
           where: {
-            OR: [
-              {
-                songName: {
-                  contains: searchTerm,
-                  mode: 'insensitive'
-                }
-              },
-              {
-                artistName: {
-                  contains: searchTerm,
-                  mode: 'insensitive',
-                }
-              },
-              {
-                albumName: {
-                  contains: searchTerm,
-                  mode: 'insensitive'
-                }
-              }
-            ],
+            ...filter
           }
         })
       }
@@ -272,6 +285,28 @@ export default class PerformanceService {
       ) 
     } catch (error: any) {
       console.log({ error })
+      return new ServiceResponse('Error deleting performances', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async batchAddPerformances(performanceData: Prisma.PerformanceCreateManyInput) {
+    console.log({performanceData})
+    try {
+      const createCount = await this.prisma.performance.createMany({
+        data: performanceData
+      })
+      return new ServiceResponse(
+        'Performances created',
+        createCount,
+        true,
+        200,
+        null,
+        null,
+        null,
+        null
+      )
+    } catch (error: any) {
+      console.log({error})
       return new ServiceResponse('Error updating performances', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
