@@ -6,8 +6,8 @@ const performanceService = new PerformanceService();
 const performanceFields = ['videoNumber', 'videoURL', 'songName', 'artistName', 'albumName', 'yesOrNo', 'videoLength', 'mainGenre', 'subGenre', 'otherGenres']
 
 export const searchPerformanceHandler = async (req: Request, res: Response) => {
-  const { q: searchTerm, mainGenre, subGenre } = req.query;
-  let filters: { [key: string]: string } = {};
+  const { q: searchTerm, mainGenre } = req.query;
+  let filters: { [key: string]: any } = {};
   let limit: number;
   let page: number;
   let sr: ServiceResponse;
@@ -21,8 +21,16 @@ export const searchPerformanceHandler = async (req: Request, res: Response) => {
   } else {
     page = 1;
   }
-  if(mainGenre) filters.mainGenre = mainGenre as string;
-  if(subGenre) filters.subGenre = subGenre as string;
+  if(mainGenre) {
+    if (mainGenre.toString().includes(",")) {
+      filters.mainGenre = {
+        in: mainGenre.toString().split(",")
+      };
+    } else {
+      filters.mainGenre = mainGenre as string;
+    }
+  }
+  console.log({filters});
   sr = await performanceService.searchPerformances(searchTerm as string || '', page, limit, filters)
   return res.status(sr.statusCode).send(sr);
 }
@@ -85,4 +93,7 @@ export const addBatchPerformanceHandler = async (req: Request, res: Response) =>
   return res.status(sr.statusCode).send(sr)
 }
 
-// export
+export const getGenresHandler = async (req: Request, res: Response) => {
+  const sr = await performanceService.getGenres()
+  return res.status(sr.statusCode).send(sr);
+}

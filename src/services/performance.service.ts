@@ -310,4 +310,38 @@ export default class PerformanceService {
       return new ServiceResponse('Error updating performances', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
+
+  async getGenres(){
+    try {
+      const groupGenres = await this.prisma.performance.groupBy({
+        by: ['mainGenre'],
+        orderBy: {
+          _count: {
+            mainGenre: 'desc'
+          }
+        },
+        _count: {
+          mainGenre: true
+        },
+        where: {
+          mainGenre: {
+            not: null
+          }
+        }
+      })
+      return new ServiceResponse(
+        'Group Genres',
+        {genres: groupGenres, count: groupGenres.length},
+        true,
+        200,
+        null,
+        null,
+        null,
+        null
+      )
+    } catch (error: any) {
+      console.log({error})
+      return new ServiceResponse('Error updating performances', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
 }

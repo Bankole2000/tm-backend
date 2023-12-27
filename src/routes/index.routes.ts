@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { createRequestSchema } from '../utils/validators/songRequest.schema';
 import { addSongRequestHandler, deleteSongRequestHandler, getSongRequestsHandler, togglePlayedStatusHandler, updateSongRequestHandler } from '../controllers/songRequest.controllers';
 import { adminLoginHandler } from '../controllers/auth.controllers';
-import { addBatchPerformanceHandler, addPerformanceHandler, deletePerformanceHandler, getPerformancesHandler, searchPerformanceHandler, updatePerformanceHandler } from '../controllers/performance.controllers';
+import { addBatchPerformanceHandler, addPerformanceHandler, deletePerformanceHandler, getGenresHandler, getPerformancesHandler, searchPerformanceHandler, updatePerformanceHandler } from '../controllers/performance.controllers';
 
 const apiRouter = Router({ mergeParams: true });
 
@@ -19,6 +19,6 @@ apiRouter.post('/performances/add', addPerformanceHandler) // create performance
 apiRouter.put('/performances/:id', updatePerformanceHandler) // update performance record
 apiRouter.delete('/performances/:id', deletePerformanceHandler) // delete performance record
 apiRouter.post('/performances/batch', addBatchPerformanceHandler)
-// apiRouter.get('/performances/genres')
+apiRouter.get('/performances/genres', getGenresHandler);
 
 export default apiRouter
