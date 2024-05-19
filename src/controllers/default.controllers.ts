@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ServiceResponse } from '../@types/ServiseReponse.type';
 import { getIO } from '../lib/socketIO';
+import JSONSongs from "../utils/data/newData.json";
 
 
 export const defaultHandler = async (_req: Request, res: Response) => {
@@ -13,3 +14,7 @@ export const routeNotFoundHandler = async (req: Request, res: Response) => {
   getIO().emit("ROUTE_NOT_FOUND", sr);
   return res.status(sr.statusCode).send(sr);
 };
+
+export const getExcelFileSongs = async (req: Request, res: Response) => {
+  res.status(200).send(JSONSongs);
+}

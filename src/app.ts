@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import {
+  getExcelFileSongs,
   routeNotFoundHandler,
 } from './controllers/default.controllers';
 import apiRouter from './routes/index.routes';
@@ -15,6 +16,8 @@ app.use(cors());
 // app.use(getUserIfLoggedIn);
 
 app.use('/api/v1', apiRouter);
+
+app.get('/json-songs', getExcelFileSongs);
 
 app.use('*', routeNotFoundHandler);
 
