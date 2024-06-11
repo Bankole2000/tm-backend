@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ServiceResponse } from '../@types/ServiseReponse.type';
 import { getIO } from '../lib/socketIO';
 import JSONSongs from "../utils/data/new/keysdata.json";
-import { newUpdateData } from 'utils/helpers/default';
+import { newUpdateData } from '../utils/helpers/default';
 
 
 export const defaultHandler = async (_req: Request, res: Response) => {
