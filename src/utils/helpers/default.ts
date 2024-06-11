@@ -4,7 +4,12 @@ import { arrayToObjectByField } from "@neoncoder/validator-utils";
 
 export const newUpdateData = async () => {
   const gss = new GenreService()
-  const { songCount, genreCount, songGenreCount } = (await gss.countAll())!;
+  const countResult = await gss.countAll()
+  if(!countResult){
+    console.log('No count result');
+    return null
+  }
+  const { songCount, genreCount, songGenreCount } = countResult;
   console.log({songCount, genreCount, songGenreCount});
   const genreData = newData['GenreLog']
   const songData = newData['Sheet1']
