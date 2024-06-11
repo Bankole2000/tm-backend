@@ -17,7 +17,7 @@ export const routeNotFoundHandler = async (req: Request, res: Response) => {
 };
 
 export const getExcelFileSongs = async (req: Request, res: Response) => {
-  res.status(200).send(JSONSongs['Sheet1']);
+  res.status(200).send(JSONSongs);
 }
 
 export const setDefaultSongData = async (req: Request, res: Response) => {
