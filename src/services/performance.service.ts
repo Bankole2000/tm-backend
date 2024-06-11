@@ -39,7 +39,7 @@ export default class PerformanceService {
           songName: 'asc'
         }
       })
-      const total = await this.prisma.performance.count();
+      const total = await this.prisma.song.count();
       const pages = Math.ceil(total / limit) || 1;
       const prev = pages > 1 && page <= pages && page > 0 ? page - 1 : null;
       const next = pages > 1 && page < pages && page > 0 ? page + 1 : null;
@@ -64,7 +64,7 @@ export default class PerformanceService {
     try {
       let data, total;
       if(Object.keys(filter).length && searchTerm){
-        data = await this.prisma.performance.findMany({
+        data = await this.prisma.song.findMany({
           take: limit,
           skip: (page - 1) * limit,
           where: {
@@ -86,6 +86,16 @@ export default class PerformanceService {
                   contains: searchTerm,
                   mode: 'insensitive'
                 }
+              },
+              {
+                songGenres: {
+                  some: {
+                    OR: [
+                      {genreId: {contains: searchTerm, mode: 'insensitive'}},
+                      {Genre: {genreName: {contains: searchTerm, mode: 'insensitive'}}}
+                    ]
+                  }
+                }
               }
             ],
             AND: {
@@ -93,7 +103,7 @@ export default class PerformanceService {
             }
           }
         })
-        total = await this.prisma.performance.count({
+        total = await this.prisma.song.count({
           where: {
             OR: [
               {
@@ -112,6 +122,16 @@ export default class PerformanceService {
                 albumName: {
                   contains: searchTerm,
                   mode: 'insensitive'
+                }
+              },
+              {
+                songGenres: {
+                  some: {
+                    OR: [
+                      {genreId: {contains: searchTerm, mode: 'insensitive'}},
+                      {Genre: {genreName: {contains: searchTerm, mode: 'insensitive'}}}
+                    ]
+                  }
                 }
               }
             ],
@@ -121,7 +141,7 @@ export default class PerformanceService {
           }
         })
       } else if (!Object.keys(filter).length && searchTerm) {
-        data = await this.prisma.performance.findMany({
+        data = await this.prisma.song.findMany({
           take: limit,
           skip: (page - 1) * limit,
           where: {
@@ -143,11 +163,21 @@ export default class PerformanceService {
                   contains: searchTerm,
                   mode: 'insensitive'
                 }
+              },
+              {
+                songGenres: {
+                  some: {
+                    OR: [
+                      {genreId: {contains: searchTerm, mode: 'insensitive'}},
+                      {Genre: {genreName: {contains: searchTerm, mode: 'insensitive'}}}
+                    ]
+                  }
+                }
               }
             ],
           }
         })
-        total = await this.prisma.performance.count({
+        total = await this.prisma.song.count({
           where: {
             OR: [
               {
@@ -166,20 +196,30 @@ export default class PerformanceService {
                 albumName: {
                   contains: searchTerm,
                   mode: 'insensitive'
+                }
+              },
+              {
+                songGenres: {
+                  some: {
+                    OR: [
+                      {genreId: {contains: searchTerm, mode: 'insensitive'}},
+                      {Genre: {genreName: {contains: searchTerm, mode: 'insensitive'}}}
+                    ]
+                  }
                 }
               }
             ],
           }
         })
       } else {
-        data = await this.prisma.performance.findMany({
+        data = await this.prisma.song.findMany({
           take: limit,
           skip: (page - 1) * limit,
           where: {
             ...filter
           }
         })
-        total = await this.prisma.performance.count({
+        total = await this.prisma.song.count({
           where: {
             ...filter
           }
@@ -290,7 +330,6 @@ export default class PerformanceService {
   }
 
   async batchAddPerformances(performanceData: Prisma.PerformanceCreateManyInput) {
-    console.log({performanceData})
     try {
       const createCount = await this.prisma.performance.createMany({
         data: performanceData
@@ -342,6 +381,16 @@ export default class PerformanceService {
     } catch (error: any) {
       console.log({error})
       return new ServiceResponse('Error updating performances', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getNewGenres(){
+    try {
+      const genres = await this.prisma.genre.findMany({include: {_count: {select: {SongGenres: true}}}})
+      return new ServiceResponse('Genres', genres, true, 200, null, null, null, null)
+    } catch (error: any) {
+      console.log({error});
+      return new ServiceResponse('Error getting Genres', null, false, 500, 'Database error', 'Database error', null, null);
     }
   }
 }

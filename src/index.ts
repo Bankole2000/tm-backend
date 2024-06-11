@@ -2,6 +2,7 @@ import http from 'http';
 import { app } from './app';
 import { config } from './utils/config';
 import { setIO } from './lib/socketIO';
+import { newUpdateData } from './utils/helpers/default';
 
 const httpServer = http.createServer(app);
 
@@ -17,5 +18,6 @@ io.on('connection', (socket) => {
 });
 
 httpServer.listen(PORT, async () => {
+  await newUpdateData()
   console.log(`TimiKeys API running on port ${PORT}`);
 });

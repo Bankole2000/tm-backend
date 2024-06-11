@@ -1,13 +1,14 @@
 import PerformanceService from '../services/performance.service';
 import { ServiceResponse } from '../@types/ServiseReponse.type';
 import {Request, Response} from 'express';
+import { Prisma } from '@prisma/client';
 
 const performanceService = new PerformanceService();
 const performanceFields = ['videoNumber', 'videoURL', 'songName', 'artistName', 'albumName', 'yesOrNo', 'videoLength', 'mainGenre', 'subGenre', 'otherGenres']
 
 export const searchPerformanceHandler = async (req: Request, res: Response) => {
-  const { q: searchTerm, mainGenre } = req.query;
-  let filters: { [key: string]: any } = {};
+  const { q: searchTerm, genres } = req.query;
+  let filters: Prisma.SongWhereInput = {};
   let limit: number;
   let page: number;
   let sr: ServiceResponse;
@@ -21,16 +22,18 @@ export const searchPerformanceHandler = async (req: Request, res: Response) => {
   } else {
     page = 1;
   }
-  if(mainGenre) {
-    if (mainGenre.toString().includes(",")) {
-      filters.mainGenre = {
-        in: mainGenre.toString().split(",")
+  if(genres) {
+    if (genres.toString().includes(",")) {
+      const reqGenres = genres.toString().split(",");
+      filters = {
+        songGenres: {some: {genreId: {in: reqGenres}}}
       };
     } else {
-      filters.mainGenre = mainGenre as string;
+      filters = {
+        songGenres: {some: {genreId: {contains: genres.toString()}}}
+      };
     }
   }
-  console.log({filters});
   sr = await performanceService.searchPerformances(searchTerm as string || '', page, limit, filters)
   return res.status(sr.statusCode).send(sr);
 }
@@ -84,7 +87,6 @@ export const deletePerformanceHandler = async (req: Request, res: Response) => {
 
 export const addBatchPerformanceHandler = async (req: Request, res: Response) => {
   const data = req.body.data;
-  console.log({data, body: req.body});
   let sr: ServiceResponse;
   if(!Array.isArray(data)){
     sr = new ServiceResponse('Invalid data sent', req.body, false, 400, 'Invalid data', 'Invalid data', 'check data and try again', null)
@@ -94,6 +96,6 @@ export const addBatchPerformanceHandler = async (req: Request, res: Response) =>
 }
 
 export const getGenresHandler = async (req: Request, res: Response) => {
-  const sr = await performanceService.getGenres()
+  const sr = await performanceService.getNewGenres()
   return res.status(sr.statusCode).send(sr);
 }

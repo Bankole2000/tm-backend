@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@neoncoder/validator-utils": "^0.0.11",
     "@prisma/client": "^5.0.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",

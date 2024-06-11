@@ -34,3 +34,31 @@ model Performance {
   subGenre             String?
   otherGenres          String[] @default([])
 }
+
+model Genre {
+  genre        String      @id
+  genreName    String
+  SongGenres   SongGenre[]
+}
+
+model Song {
+  id              String      @id @default(uuid())
+  videoNo         Int
+  tiktokVideoLink String
+  songName        String
+  artistName      String
+  albumName       String
+  spotifyId       String?
+  videoLength     String
+  YesNo           Boolean
+  songGenres      SongGenre[]
+}
+
+model SongGenre {
+  songId  String
+  genreId String
+  Song    Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
+  Genre   Genre  @relation(fields: [genreId], references: [genre], onDelete: Cascade)
+
+  @@id([songId, genreId])
+}
