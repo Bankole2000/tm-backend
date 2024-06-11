@@ -18,6 +18,8 @@ io.on('connection', (socket) => {
 });
 
 httpServer.listen(PORT, async () => {
-  await newUpdateData()
+  setTimeout(async () => {
+    await newUpdateData()
+  }, 5000);
   console.log(`TimiKeys API running on port ${PORT}`);
 });
