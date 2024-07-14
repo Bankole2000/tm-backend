@@ -99,3 +99,20 @@ export const getGenresHandler = async (req: Request, res: Response) => {
   const sr = await performanceService.getNewGenres()
   return res.status(sr.statusCode).send(sr);
 }
+
+export const addSongHandler = async (req: Request, res: Response) => {
+  const ppgs = new PerformanceService()
+  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'songGenres' ]
+  const createData: {[key: string]: any} = {};
+  fields.forEach(f => {
+    if (req.body[f]){
+      if(f === 'videoNo'){
+        createData[f] = Number(req.body[f])
+      } else {
+        createData[f] = req.body[f]
+      }
+    }
+  })
+  const sr = await ppgs.addSong(createData);
+  return res.status(sr.statusCode).send(sr)
+}

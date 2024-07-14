@@ -393,4 +393,16 @@ export default class PerformanceService {
       return new ServiceResponse('Error getting Genres', null, false, 500, 'Database error', 'Database error', null, null);
     }
   }
+
+  async addSong(createData: any){
+    try {
+      const newSong = await this.prisma.song.create({
+        data: createData
+      })
+      return new ServiceResponse('Song Record created', newSong, true, 201, null, null, null, null);
+    } catch (error: any) {
+      console.log({error});
+      return new ServiceResponse('Error creating Song', null, false, 500, 'Database error', 'Database error', null, null);
+    }
+  }
 }
