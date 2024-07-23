@@ -2,7 +2,7 @@ import PerformanceService from '../services/performance.service';
 import { ServiceResponse } from '../@types/ServiseReponse.type';
 import {Request, Response} from 'express';
 import { Prisma } from '@prisma/client';
-import { isBoolean } from 'utils/helpers/validators';
+import { isBoolean } from '../utils/helpers/validators';
 
 const performanceService = new PerformanceService();
 const performanceFields = ['videoNumber', 'videoURL', 'songName', 'artistName', 'albumName', 'yesOrNo', 'videoLength', 'mainGenre', 'subGenre', 'otherGenres']
