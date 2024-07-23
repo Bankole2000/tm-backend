@@ -12,3 +12,5 @@ export const isNumbersOnly = (numLike: string) => (numLike ? numOnlyRegex.test(n
 export const isNotEmpty = (stringLike: string) => validStringRegex.test(stringLike);
 
 export const isValidObjectId = (idLike: string) => hexStringRegex.test(idLike);
+
+export const isBoolean = (val: any): boolean => Boolean(val) === val;

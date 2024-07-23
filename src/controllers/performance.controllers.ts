@@ -2,6 +2,7 @@ import PerformanceService from '../services/performance.service';
 import { ServiceResponse } from '../@types/ServiseReponse.type';
 import {Request, Response} from 'express';
 import { Prisma } from '@prisma/client';
+import { isBoolean } from 'utils/helpers/validators';
 
 const performanceService = new PerformanceService();
 const performanceFields = ['videoNumber', 'videoURL', 'songName', 'artistName', 'albumName', 'yesOrNo', 'videoLength', 'mainGenre', 'subGenre', 'otherGenres']
@@ -111,6 +112,9 @@ export const addSongHandler = async (req: Request, res: Response) => {
       } else {
         createData[f] = req.body[f]
       }
+    }
+    if(isBoolean(req.body[f])){
+      createData[f] = req.body[f]
     }
   })
   const sr = await ppgs.addSong(createData);
