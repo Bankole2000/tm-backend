@@ -183,6 +183,14 @@ export default class PerformanceService {
                 }
               }
             ],
+          },
+          include: {
+            _count: {select: {songGenres: true, }},
+            songGenres: {
+              include: {
+                Genre: true
+              }
+            }
           }
         })
         total = await this.prisma.song.count({
@@ -225,6 +233,14 @@ export default class PerformanceService {
           skip: (page - 1) * limit,
           where: {
             ...filter
+          },
+          include: {
+            _count: {select: {songGenres: true, }},
+            songGenres: {
+              include: {
+                Genre: true
+              }
+            }
           }
         })
         total = await this.prisma.song.count({
@@ -258,7 +274,7 @@ export default class PerformanceService {
       const performance = this.prisma.performance.findUnique({
         where: {
           id
-        }
+        },
       })
       if(!performance){
         return new ServiceResponse('Not found', performance, false, 404, 'Not found', 'notFound', 'Check logs and database', null)
