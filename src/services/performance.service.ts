@@ -101,6 +101,14 @@ export default class PerformanceService {
             AND: {
               ...filter
             }
+          },
+          include: {
+            _count: {select: {songGenres: true, }},
+            songGenres: {
+              include: {
+                Genre: true
+              }
+            }
           }
         })
         total = await this.prisma.song.count({
