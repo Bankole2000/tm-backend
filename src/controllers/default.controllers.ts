@@ -6,7 +6,7 @@ import { newUpdateData } from '../utils/helpers/default';
 
 
 export const defaultHandler = async (_req: Request, res: Response) => {
-  const sr = new ServiceResponse('Not yet implemented', null, true, 200, null, null, null);
+  const sr = new ServiceResponse('Not yet implemented yet', null, true, 200, null, null, null);
   return res.status(sr.statusCode).send(sr);
 };
 
