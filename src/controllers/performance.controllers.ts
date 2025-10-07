@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import { isBoolean } from '../utils/helpers/validators';
 
 const performanceService = new PerformanceService();
-const performanceFields = ['videoNumber', 'videoURL', 'songName', 'artistName', 'albumName', 'yesOrNo', 'videoLength', 'mainGenre', 'subGenre', 'otherGenres']
+const performanceFields = ['videoNumber', 'videoURL', 'songName', 'artistName', 'albumName', 'yesOrNo', 'videoLength', 'mainGenre', 'subGenre', 'otherGenres', 'uploadDate' ]
 
 export const searchPerformanceHandler = async (req: Request, res: Response) => {
   const { q: searchTerm, genres } = req.query;
@@ -103,7 +103,7 @@ export const getGenresHandler = async (req: Request, res: Response) => {
 
 export const addSongHandler = async (req: Request, res: Response) => {
   const ppgs = new PerformanceService()
-  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'songGenres' ]
+  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'songGenres', 'audioUrl' ]
   const createData: {[key: string]: any} = {};
   fields.forEach(f => {
     if (req.body[f]){
