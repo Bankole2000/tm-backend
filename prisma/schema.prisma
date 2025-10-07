@@ -33,6 +33,7 @@ model Performance {
   mainGenre            String?
   subGenre             String?
   otherGenres          String[] @default([])
+  uploadDate           DateTime?
 }
 
 model Genre {
@@ -52,6 +53,7 @@ model Song {
   videoLength     String
   YesNo           Boolean
   songGenres      SongGenre[]
+  audioUrl        String?
 }
 
 model SongGenre {
