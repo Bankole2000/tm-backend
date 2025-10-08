@@ -101,10 +101,12 @@ export const getGenresHandler = async (req: Request, res: Response) => {
   return res.status(sr.statusCode).send(sr);
 }
 
+// Replace the addSongHandler function in src/controllers/performance.controllers.ts
 export const addSongHandler = async (req: Request, res: Response) => {
   const ppgs = new PerformanceService()
-  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'songGenres', 'audioUrl' ]
+  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'songGenres', 'audioUrl']
   const createData: {[key: string]: any} = {};
+  
   fields.forEach(f => {
     if (req.body[f]){
       if(f === 'videoNo'){
@@ -117,6 +119,27 @@ export const addSongHandler = async (req: Request, res: Response) => {
       createData[f] = req.body[f]
     }
   })
+
+  // Auto-generate audioUrl if not provided but tiktokVideoLink exists
+  if (!createData.audioUrl && createData.tiktokVideoLink) {
+    try {
+      // Extract video ID from TikTok URL
+      const tiktokUrl = createData.tiktokVideoLink;
+      const match = tiktokUrl.match(/\/video\/(\d+)/);
+      
+      if (match && match[1]) {
+        const videoId = match[1];
+        createData.audioUrl = `https://pub-b8c2ac03cc924dd08beda93e65075aa1.r2.dev/${videoId}.mp3`;
+        console.log(`Auto-generated audioUrl: ${createData.audioUrl}`);
+      } else {
+        console.log(`Could not extract video ID from TikTok URL: ${tiktokUrl}`);
+      }
+    } catch (error) {
+      console.error('Error generating audioUrl:', error);
+      // Continue without audioUrl if extraction fails
+    }
+  }
+
   const sr = await ppgs.addSong(createData);
   return res.status(sr.statusCode).send(sr)
 }
