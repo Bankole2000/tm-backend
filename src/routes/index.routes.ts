@@ -23,5 +23,6 @@ apiRouter.put('/performances/:id', updatePerformanceHandler) // update performan
 apiRouter.delete('/performances/:id', deletePerformanceHandler) // delete performance record
 apiRouter.post('/performances/batch', addBatchPerformanceHandler)
 apiRouter.get('/performances/genres', getGenresHandler);
+apiRouter.put('/songs/:id', updateSongHandler) // Add this line
 
 export default apiRouter

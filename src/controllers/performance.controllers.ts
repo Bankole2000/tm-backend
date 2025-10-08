@@ -143,3 +143,25 @@ export const addSongHandler = async (req: Request, res: Response) => {
   const sr = await ppgs.addSong(createData);
   return res.status(sr.statusCode).send(sr)
 }
+export const updateSongHandler = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const ppgs = new PerformanceService()
+  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'songGenres', 'audioUrl']
+  const updateData: {[key: string]: any} = {};
+  
+  fields.forEach(f => {
+    if (req.body[f]){
+      if(f === 'videoNo'){
+        updateData[f] = Number(req.body[f])
+      } else {
+        updateData[f] = req.body[f]
+      }
+    }
+    if(isBoolean(req.body[f])){
+      updateData[f] = req.body[f]
+    }
+  })
+
+  const sr = await ppgs.updateSong(id, updateData);
+  return res.status(sr.statusCode).send(sr)
+}

@@ -430,3 +430,24 @@ export default class PerformanceService {
     }
   }
 }
+async updateSong(id: string, songData: any) {
+  try {
+    const updatedSong = await this.prisma.song.update({
+      where: { id },
+      data: songData
+    })
+    return new ServiceResponse(
+      'Song updated',
+      updatedSong,
+      true,
+      200,
+      null,
+      null,
+      null,
+      null
+    )
+  } catch (error: any) {
+    console.log({ error })
+    return new ServiceResponse('Error updating song', null, false, 500, error.message, error, 'Check logs and database');
+  }
+}
