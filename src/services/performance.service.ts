@@ -429,7 +429,7 @@ export default class PerformanceService {
       return new ServiceResponse('Error creating Song', null, false, 500, 'Database error', 'Database error', null, null);
     }
   }
-}
+} 
 async updateSong(id: string, songData: any) {
   try {
     const updatedSong = await this.prisma.song.update({
