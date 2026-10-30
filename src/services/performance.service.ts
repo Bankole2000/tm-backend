@@ -418,10 +418,27 @@ export default class PerformanceService {
     }
   }
 
-  async addSong(createData: any){
+  async addSong(createData: any, genres: string[] = []){
     try {
-      const newSong = await this.prisma.song.create({
-        data: createData
+      // Genre slugs follow the seed's convention: lowercase, alphanumerics only ("art pop" -> "artpop")
+      const genreMap = new Map<string, string>();
+      genres.forEach(g => {
+        const genreName = g.trim().toLowerCase();
+        const genre = genreName.replace(/[^a-z0-9]/g, '');
+        if (genre && !genreMap.has(genre)) genreMap.set(genre, genreName);
+      });
+
+      const newSong = await this.prisma.$transaction(async (tx) => {
+        for (const [genre, genreName] of genreMap) {
+          await tx.genre.upsert({ where: { genre }, update: {}, create: { genre, genreName } });
+        }
+        return tx.song.create({
+          data: {
+            ...createData,
+            songGenres: { create: [...genreMap.keys()].map(genreId => ({ genreId })) }
+          },
+          include: { songGenres: true }
+        })
       })
       return new ServiceResponse('Song Record created', newSong, true, 201, null, null, null, null);
     } catch (error: any) {

@@ -104,7 +104,9 @@ export const getGenresHandler = async (req: Request, res: Response) => {
 // Replace the addSongHandler function in src/controllers/performance.controllers.ts
 export const addSongHandler = async (req: Request, res: Response) => {
   const ppgs = new PerformanceService()
-  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'songGenres', 'audioUrl']
+  const fields = ['videoNo', 'tiktokVideoLink', 'songName', 'artistName', 'albumName', 'spotifyId', 'videoLength', 'YesNo', 'audioUrl']
+  // Optional genre display names, e.g. ["pop", "art pop"]. Older clients that omit it still work.
+  const genres: string[] = Array.isArray(req.body.genres) ? req.body.genres.filter((g: any) => typeof g === 'string') : [];
   const createData: {[key: string]: any} = {};
   
   fields.forEach(f => {
@@ -140,7 +142,7 @@ export const addSongHandler = async (req: Request, res: Response) => {
     }
   }
 
-  const sr = await ppgs.addSong(createData);
+  const sr = await ppgs.addSong(createData, genres);
   return res.status(sr.statusCode).send(sr)
 }
 export const updateSongHandler = async (req: Request, res: Response) => {
