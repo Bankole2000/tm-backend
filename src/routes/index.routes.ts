@@ -4,10 +4,8 @@ import { createRequestSchema } from '../utils/validators/songRequest.schema';
 import { addSongRequestHandler, deleteSongRequestHandler, getSongRequestsHandler, togglePlayedStatusHandler, updateSongRequestHandler } from '../controllers/songRequest.controllers';
 import { adminLoginHandler } from '../controllers/auth.controllers';
 import { addBatchPerformanceHandler, addPerformanceHandler, addSongHandler, deletePerformanceHandler, getGenresHandler, getPerformancesHandler, searchPerformanceHandler, updatePerformanceHandler, updateSongHandler } from '../controllers/performance.controllers';
-import { setDefaultSongData } from '../controllers/default.controllers';   
 const apiRouter = Router({ mergeParams: true });
 
-apiRouter.get('/default', setDefaultSongData);
 apiRouter.post('/songs/add', addSongHandler);
 apiRouter.post('/login', adminLoginHandler);
 apiRouter.get('/requests', getSongRequestsHandler); // get Song requests
